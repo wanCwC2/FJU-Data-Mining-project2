@@ -1,8 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 10 23:05:32 2022
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
 
-@author: cwcy
-"""
-
+data = pd.read_csv('data/project2_train.csv')
+test = pd.read_csv('data/project2_test.csv')
