@@ -52,3 +52,36 @@ for col in test.columns:
 X_df = standardization(df.iloc[:,0:22])
 y_df = df['treatment'].astype('int')
 test = standardization(test)
+
+X_train , X_test , y_train , y_test = train_test_split(X_df ,y_df , test_size=0.3 , random_state=408570344)
+
+#XGBoost
+from xgboost import XGBClassifier
+
+params = { 'max_depth': range (2, 15, 3),
+           'learning_rate': [0.01, 0.1, 0.5, 1, 5, 10],
+           'n_estimators': range(80, 500, 50),
+           'colsample_bytree': [0.5, 1, 3, 6, 10],
+#           'min_child_weigh': range(1, 9, 1),
+           'subsample': [0.5, 0.7, 0.9, 1.5, 2]}
+
+from sklearn.model_selection import GridSearchCV
+model = XGBClassifier()
+clf = GridSearchCV(estimator = model,
+                   param_grid = params,
+                   scoring = 'neg_log_loss')
+clf.fit(X_train, y_train)
+
+print("Best parameters:", clf.best_params_)
+# Best parameters: {'colsample_bytree': 1, 'learning_rate': 0.01, 'max_depth': 2, 'n_estimators': 380, 'subsample': 0.9}
+print(clf.best_estimator_)
+# XGBClassifier(colsample_bytree=1, learning_rate=0.01, max_depth=2, n_estimators=380, subsample=0.9)
+
+model = clf.best_estimator_
+model.fit(X_train, y_train)
+
+from sklearn.metrics import accuracy_score
+y_pred = model.predict(X_test)
+print('XGBoost model accuracy score: {0:0.4f}'. format(accuracy_score(y_test, y_pred)))
+
+
