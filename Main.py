@@ -57,7 +57,7 @@ X_train , X_test , y_train , y_test = train_test_split(X_df ,y_df , test_size=0.
 
 #XGBoost
 from xgboost import XGBClassifier
-
+'''
 params = { 'max_depth': range (2, 15, 3),
            'learning_rate': [0.01, 0.1, 0.5, 1, 5, 10],
            'n_estimators': range(80, 500, 50),
@@ -76,12 +76,18 @@ print("Best parameters:", clf.best_params_)
 # Best parameters: {'colsample_bytree': 1, 'learning_rate': 0.01, 'max_depth': 2, 'n_estimators': 380, 'subsample': 0.9}
 print(clf.best_estimator_)
 # XGBClassifier(colsample_bytree=1, learning_rate=0.01, max_depth=2, n_estimators=380, subsample=0.9)
-
-model = clf.best_estimator_
+'''
+#model = clf.best_estimator_
+model = XGBClassifier(colsample_bytree=1, learning_rate=0.01, max_depth=2, n_estimators=380, subsample=0.9)
 model.fit(X_train, y_train)
 
 from sklearn.metrics import accuracy_score
 y_pred = model.predict(X_test)
-print('XGBoost model accuracy score: {0:0.4f}'. format(accuracy_score(y_test, y_pred)))
+print('XGBoost model accuracy score: {0:0.4f}'. format(accuracy_score(y_test, y_pred))) #0.83
 
+#Output data
+df_submit = pd.DataFrame([], columns=['Id', 'Treatment'])
+df_submit['Id'] = [f'{i:03d}' for i in range(len(test))]
+df_submit['Treatment'] = model.predict(test)
 
+df_submit.to_csv('data/predict.csv', index=None)
