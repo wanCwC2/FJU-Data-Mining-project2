@@ -2,8 +2,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 import warnings
 warnings.filterwarnings('ignore')
+
+def standardization(data):
+    sc = StandardScaler()   
+    data = sc.fit_transform(data)
+    return data
 
 df = pd.read_csv('data/project2_train.csv')
 test = pd.read_csv('data/project2_test.csv')
@@ -41,3 +48,7 @@ for col in test.columns:
     test[col] = test[col].replace({'More than 1000': 1, '500-1000': 0.8, '100-500': 0.6, '26-100': 0.4, '6-25': 0.2, '1-5': 0})
     test[col] = test[col].replace({'Somewhat easy': 0.25, "Don't know": 0.5, 'Somewhat difficult': 0.75, 'Very difficult': 1, 'Very easy': 0})
     test[col] = test[col].fillna(0)
+
+X_df = standardization(df.iloc[:,0:22])
+y_df = df['treatment'].astype('int')
+test = standardization(test)
